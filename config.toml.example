@@ -1,0 +1,11 @@
+[task]
+cluster = "your-cluster-name"
+task_def = "your-task-definition"
+launch_type = "FARGATE" or "EC2"
+count = 1
+
+[ssm]
+ssm_path = "/your/ssm/path"
+
+[overrides]
+container_name = "your-container-name"
