@@ -93,7 +93,7 @@ class TaskRunner:
             # convert tags string to list of dicts: [{'key': 'key1', 'value': 'value1'}, {'key': 'key2', 'value': 'value2'}]
             tags = self.args.tags
         tags.extend(self.config['task']['tags'])
-        tags.append({'key': 'aws_user', 'value': self.aws_user})
+        tags.append({'key': 'AwsUser', 'value': self.aws_user})
         return tags
 
     def submit_task(self) -> None:

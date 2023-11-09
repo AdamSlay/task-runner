@@ -14,9 +14,19 @@ pip3 install -r requirements.txt
 You must be logged into the ```aws-cli``` with an account that has the appropriate permissions to run the script.
 
 To run the script and launch a new task, run the following command:
-```bash
+```shell
 python3 lts-task-runner.py --sdate [YYYY-MM-DD] --edate [YYYY-MM-DD] --warn [DEBUG, INFO, WARNING, ERROR, CRITICAL]
 ```
+Tags should be specified as a comma separated list of key-value pairs, e.g. 
+```shell
+python3 lts-task-runner.py --sdate [YYYY-MM-DD] --edate [YYYY-MM-DD] --tags key1=value1,key2=value2
+```
+Specify a config file with the ```--config``` flag:
+```shell
+python3 lts-task-runner.py --config config.json
+```
+
+
 
 If any parameter is not specified, the container will use its default value.
 
