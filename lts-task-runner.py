@@ -29,7 +29,7 @@ def build_command(args: argparse.Namespace) -> list:
     :param args: argparse.Namespace object with the parsed command line arguments
     :return: command for the LongTermStats entrypoint as a list
     """
-    command = []  # just the arguments for the LongTermStats entrypoint
+    command = []  # arguments for the LongTermStats entrypoint, so you don't need to include 'LongTermStats'
     if args.sdate is not None:
         command.extend(["--sdate", args.sdate])
     if args.edate is not None:
