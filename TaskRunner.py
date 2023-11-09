@@ -63,21 +63,22 @@ class TaskRunner:
         Build the overrides for the ECS task from SSM parameters and command line arguments
         :return: overrides for the ECS task as a dict
         """
-        ssm_env_vars = self.ssm.get_parameters_by_path(Path=f'{self.config["ssm"]["ssm_path"]}/env', Recursive=True)
-        environment = [{'name': parm['Name'].split('/')[-1], 'value': parm['Value']} for parm in
-                       ssm_env_vars['Parameters']]
-
         overrides = {
             'containerOverrides': [
                 {
                     'name': self.config['overrides']['container_name'],
                     'command': self.build_command_arguments(),
-                    'environment': environment
                 },
             ],
         }
+
+        env_vars = self.config["task"]["env_vars"]
+        if env_vars:
+            environment = [{e: env_vars[e]} for e in env_vars]
+            logging.info(f'Environment variables provided for ECS task: {environment}')
+            overrides['containerOverrides'][0]['environment'] = environment
+
         logging.info(f'Container_name: {self.config["overrides"]["container_name"]}')
-        logging.info(f'Environment: {environment}')
         return overrides
 
     def build_tags(self) -> list:

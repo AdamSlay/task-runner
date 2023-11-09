@@ -3,6 +3,7 @@
     "cluster": "example-cluster",
     "task_def": "example-task-def",
     "launch_type": "FARGATE or EC2",
+    "env_vars": {},
     "count": 1
   },
   "ssm": {
