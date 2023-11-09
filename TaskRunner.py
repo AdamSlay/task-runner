@@ -25,7 +25,7 @@ class TaskRunner:
         Build the command for the LongTermStats entrypoint from the command line arguments
         :return: command for the LongTermStats entrypoint as a list
         """
-        command_args = []  # arguments for the LongTermStats entrypoint, so you don't need to include 'LongTermStats'
+        command_args = []  # just the arguments, not the full command
         if self.args.sdate is not None:
             command_args.extend(["--sdate", self.args.sdate])
         if self.args.edate is not None:
