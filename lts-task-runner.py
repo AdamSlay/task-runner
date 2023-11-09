@@ -87,7 +87,11 @@ def build_overrides(ssm: boto3.client, command: list) -> dict:
     return overrides
 
 
-def build_tags():
+def build_tags() -> list:
+    """
+    Build the tags for the ECS task
+    :return: tags for the ECS task as a list of dicts
+    """
     sts = boto3.client('sts')
     arn = sts.get_caller_identity()['Arn']
     username = arn.split('/')[-1]
