@@ -10,15 +10,16 @@ class TaskRunner:
     """
 
     def __init__(self, args: argparse.Namespace):
+        self.args = args
+        self.ecs = boto3.client('ecs')
+        self.ssm = boto3.client('ssm')
+
+        arn = boto3.client('sts').get_caller_identity()['Arn']
+        self.aws_user = arn.split('/')[-1]
 
         with open(args.config, 'r') as f:
             self.config = json.load(f)
 
-        self.args = args
-        self.ecs = boto3.client('ecs')
-        self.ssm = boto3.client('ssm')
-        arn = boto3.client('sts').get_caller_identity()['Arn']
-        self.aws_user = arn.split('/')[-1]
 
     def build_command_arguments(self) -> list:
         """
