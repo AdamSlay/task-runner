@@ -23,7 +23,7 @@ def parse_args() -> argparse.Namespace:
     return args
 
 
-def build_command(args: argparse.Namespace) -> list:
+def build_command_arguments(args: argparse.Namespace) -> list:
     """
     Build the command for the LongTermStats entrypoint from the command line arguments
     :param args: argparse.Namespace object with the parsed command line arguments
@@ -135,8 +135,8 @@ def main():
     ecs = boto3.client('ecs')
     ssm = boto3.client('ssm')
 
-    command = build_command(args)
-    overrides = build_overrides(ssm, command)
+    command_args = build_command_arguments(args)
+    overrides = build_overrides(ssm, command_args)
     network_configuration = build_network_configuration(ssm)
 
     submit_task(ecs, network_configuration, overrides)
