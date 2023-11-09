@@ -1,0 +1,121 @@
+import argparse
+import boto3
+import json
+import logging
+import sys
+
+
+class TaskRunner:
+    """
+    Run ECS tasks from the command line with overrides from a config file
+    """
+
+    def __init__(self, args: argparse.Namespace):
+        logging.basicConfig(level=args.warn, format='%(asctime)s - %(levelname)s - %(message)s', stream=sys.stdout)
+
+        with open(args.config, 'r') as f:
+            self.config = json.load(f)
+
+        self.args = args
+        self.ecs = boto3.client('ecs')
+        self.ssm = boto3.client('ssm')
+
+    def build_command_arguments(self) -> list:
+        """
+        Build the command for the LongTermStats entrypoint from the command line arguments
+        :return: command for the LongTermStats entrypoint as a list
+        """
+        command_args = []  # arguments for the LongTermStats entrypoint, so you don't need to include 'LongTermStats'
+        if self.args.sdate is not None:
+            command_args.extend(["--sdate", self.args.sdate])
+        if self.args.edate is not None:
+            command_args.extend(["--edate", self.args.edate])
+        if self.args.warn is not None:
+            command_args.extend(["--warn", self.args.warn])
+
+        logging.info(f'Command for LongTermStats entrypoint: {command_args}')
+        return command_args
+
+    def build_network_configuration(self) -> dict:
+        """
+        Build the network configuration for the ECS task from SSM parameters
+        :return: network configuration for the ECS task as a dict
+        """
+        subnet_path = self.config["ssm"]["ssm_path"] + "/subnet"
+        sg_path = self.config["ssm"]["ssm_path"] + "/security_group"
+        ip_path = self.config["ssm"]["ssm_path"] + "/assign_public_ip"
+
+        subnet_id = self.ssm.get_parameter(Name=subnet_path)['Parameter']['Value']
+        security_group_id = self.ssm.get_parameter(Name=sg_path)['Parameter']['Value']
+        assign_public_ip = self.ssm.get_parameter(Name=ip_path)['Parameter']['Value']
+
+        network_configuration = {
+            'awsvpcConfiguration': {
+                'subnets': [subnet_id],
+                'securityGroups': [security_group_id],
+                'assignPublicIp': assign_public_ip
+            }
+        }
+        logging.info(
+            f'Network configuration for ECS task: [subnets: {subnet_id}, security_groups: {security_group_id}, assign_public_ip: {assign_public_ip}]')
+        return network_configuration
+
+    def build_overrides(self) -> dict:
+        """
+        Build the overrides for the ECS task from SSM parameters and command line arguments
+        :return: overrides for the ECS task as a dict
+        """
+        ssm_env_vars = self.ssm.get_parameters_by_path(Path=f'{self.config["ssm"]["ssm_path"]}/env', Recursive=True)
+        environment = [{'name': parm['Name'].split('/')[-1], 'value': parm['Value']} for parm in
+                       ssm_env_vars['Parameters']]
+
+        overrides = {
+            'containerOverrides': [
+                {
+                    'name': self.config['overrides']['container_name'],
+                    'command': self.build_command_arguments(),
+                    'environment': environment
+                },
+            ],
+        }
+        logging.info(f'Container_name: {self.config["overrides"]["container_name"]}')
+        logging.info(f'Environment: {environment}')
+        return overrides
+
+    def build_tags(self) -> list:
+        """
+        Build the tags for the ECS task
+        :return: tags for the ECS task as a list of dicts
+        """
+        sts = boto3.client('sts')
+        arn = sts.get_caller_identity()['Arn']
+        username = arn.split('/')[-1]
+        tags = [
+            {
+                'key': 'ManualRun',
+                'value': 'True'
+            },
+            {
+                'key': 'User',
+                'value': username
+            }
+        ]
+        return tags
+
+    def submit_task(self) -> None:
+        """
+        Submit the ECS task to AWS
+        :return: Response from AWS as a dict
+        """
+        task_response = self.ecs.run_task(
+            cluster=self.config['task']['cluster'],
+            taskDefinition=self.config['task']['task_def'],
+            count=self.config['task']['count'],
+            launchType=self.config['task']['launch_type'],
+            networkConfiguration=self.build_network_configuration(),
+            overrides=self.build_overrides(),
+            tags=self.build_tags()
+        )
+        logging.info(f'Task submission response from AWS: {task_response["ResponseMetadata"]["HTTPStatusCode"]}')
+        logging.info(f'Task ARN: {task_response["tasks"][0]["taskArn"]}')
+        logging.info(f'Task Status: {task_response["tasks"][0]["lastStatus"]}')
