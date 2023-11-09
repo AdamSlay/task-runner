@@ -12,10 +12,12 @@ def parse_args() -> argparse.Namespace:
     Parse the command line arguments
     :return: argparse.Namespace object with the parsed arguments
     """
-    parser = argparse.ArgumentParser(description='Run LongTermStats as an ECS task in Fargate with the provided arguments(start date, end date, warning level)')
+    parser = argparse.ArgumentParser(
+        description='Run LongTermStats as an ECS task in Fargate with the provided arguments(start date, end date, warning level)')
     parser.add_argument('--sdate', type=str, default=None, help='The start date for the task in YYYY-MM-DD format')
     parser.add_argument('--edate', type=str, default=None, help='The end date for the task in YYYY-MM-DD format')
-    parser.add_argument('--warn', type=str, default='INFO', help='Default=INFO. The warning level to log (DEBUG, INFO, WARNING, ERROR, CRITICAL)')
+    parser.add_argument('--warn', type=str, default='INFO',
+                        help='Default=INFO. The warning level to log (DEBUG, INFO, WARNING, ERROR, CRITICAL)')
     args = parser.parse_args()
     logging.info(f'Parsed command line arguments: {args}')
     return args
@@ -56,7 +58,8 @@ def build_network_configuration(ssm: boto3.client) -> dict:
             'assignPublicIp': assign_public_ip
         }
     }
-    logging.info(f'Network configuration for ECS task: [subnets: {subnet_id}, security_groups: {security_group_id}, assign_public_ip: {assign_public_ip}]')
+    logging.info(
+        f'Network configuration for ECS task: [subnets: {subnet_id}, security_groups: {security_group_id}, assign_public_ip: {assign_public_ip}]')
     return network_configuration
 
 
@@ -84,6 +87,23 @@ def build_overrides(ssm: boto3.client, command: list) -> dict:
     return overrides
 
 
+def build_tags():
+    sts = boto3.client('sts')
+    arn = sts.get_caller_identity()['Arn']
+    username = arn.split('/')[-1]
+    tags = [
+        {
+            'key': 'ManualRun',
+            'value': 'True'
+        },
+        {
+            'key': 'User',
+            'value': username
+        }
+    ]
+    return tags
+
+
 def submit_task(ecs: boto3.client, network_configuration: dict, overrides: dict) -> None:
     """
     Submit the ECS task to AWS and return the response
@@ -98,7 +118,8 @@ def submit_task(ecs: boto3.client, network_configuration: dict, overrides: dict)
         count=config['task']['count'],
         launchType=config['task']['launch_type'],
         networkConfiguration=network_configuration,
-        overrides=overrides
+        overrides=overrides,
+        tags=build_tags()
     )
     logging.info(f'Task submission response from AWS: {task_response["ResponseMetadata"]["HTTPStatusCode"]}')
     logging.info(f'Task ARN: {task_response["tasks"][0]["taskArn"]}')
@@ -113,7 +134,7 @@ def main():
     command = build_command(args)
     overrides = build_overrides(ssm, command)
     network_configuration = build_network_configuration(ssm)
-    
+
     submit_task(ecs, network_configuration, overrides)
 
 
