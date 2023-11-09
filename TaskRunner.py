@@ -91,7 +91,7 @@ class TaskRunner:
         tags = []
         if self.args.tags:
             # convert tags string to list of dicts: [{'key': 'key1', 'value': 'value1'}, {'key': 'key2', 'value': 'value2'}]
-            tags = [{'key': t.split('=')[0], 'value': t.split('=')[1]} for t in self.args.tags.split(',')]
+            tags = self.args.tags
         tags.extend(self.config['task']['tags'])
         tags.append({'key': 'aws_user', 'value': self.aws_user})
         return tags

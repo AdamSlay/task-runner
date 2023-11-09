@@ -21,11 +21,27 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument('--config', type=str, default='config.json', help='Path to the config file')
     parser.add_argument('--tags', type=str, default=None, help='Tags to apply to the task. Comma separated and no spaces "key1=value1,key2=value2"')
     args = parser.parse_args()
+
     if args.warn not in ['DEBUG', 'INFO', 'WARN', 'ERROR', 'CRITICAL']:
         raise ValueError(f'Invalid warning level: {args.warn}')
     else:
         logging.getLogger().setLevel(args.warn)
+
+    if args.tags is not None:
+        args.tags = format_tags(args.tags)
     return args
+
+
+def format_tags(tags: str) -> list:
+    """
+    Parse the tags argument into a list of dicts
+    :param tags: tags argument from the command line
+    :return: list of dicts with the tags formatted as required by the boto3 API
+    """
+    tags = tags.split(',')  # ['key1=value1', 'key2=value2']
+    tags = [tag.split('=') for tag in tags]  # [['key1', 'value1'], ['key2', 'value2']]
+    tags = [{'key': tag[0], 'value': tag[1]} for tag in tags]  # [{'key': 'key1', 'value': 'value1'}, {'key': 'key2', 'value': 'value2'}]
+    return tags
 
 
 def main():
