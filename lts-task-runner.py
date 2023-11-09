@@ -3,7 +3,7 @@ import boto3
 import logging
 import toml
 
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(level=logging.WARN, format='%(asctime)s - %(levelname)s - %(message)s')
 config = toml.load('config.toml')
 
 
