@@ -27,7 +27,7 @@ The following parameters should be stored in the _***SSM Parameter Store***_:
 - ```assign_public_ip```: whether to assign a public IP to the Fargate cluster, either "ENABLED" or "DISABLED"
 - ```/env```: a subdirectory containing the environment variables for the LongTermStats application. As of now, DATASERVER_HOST and MESONET_MAILHOST
 
-The configuration file is stored in the ```config.toml``` file. This file is ignored by git, so you can edit the ```config.toml.example``` file then rename it to ```config.toml```.
+The configuration file is stored in the ```config.json``` file. This file is ignored by git, so you can edit the ```config.json.example``` file then rename it to ```config.json```.
 The following parameters can be configured:
 - ```cluster```: the name of the ECS cluster
 - ```task_def```: the name of the task definition
