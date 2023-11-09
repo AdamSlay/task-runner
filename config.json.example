@@ -1,10 +1,11 @@
 {
   "task": {
+    "count": 1,
     "cluster": "example-cluster",
     "task_def": "example-task-def",
     "launch_type": "FARGATE or EC2",
     "env_vars": {},
-    "count": 1
+    "tags": [{"key1":"value1"}, {"key2":"value2"}]
   },
   "ssm": {
     "ssm_path": "/path/to/your/ssm/parameters",
