@@ -17,6 +17,8 @@ class TaskRunner:
         self.args = args
         self.ecs = boto3.client('ecs')
         self.ssm = boto3.client('ssm')
+        arn = boto3.client('sts').get_caller_identity()['Arn']
+        self.aws_user = arn.split('/')[-1]
 
     def build_command_arguments(self) -> list:
         """
@@ -86,19 +88,12 @@ class TaskRunner:
         Build the tags for the ECS task
         :return: tags for the ECS task as a list of dicts
         """
-        sts = boto3.client('sts')
-        arn = sts.get_caller_identity()['Arn']
-        username = arn.split('/')[-1]
-        tags = [
-            {
-                'key': 'ManualRun',
-                'value': 'True'
-            },
-            {
-                'key': 'User',
-                'value': username
-            }
-        ]
+        tags = []
+        if self.args.tags:
+            # convert tags string to list of dicts: [{'key': 'key1', 'value': 'value1'}, {'key': 'key2', 'value': 'value2'}]
+            tags = [{'key': t.split('=')[0], 'value': t.split('=')[1]} for t in self.args.tags.split(',')]
+        tags.extend(self.config['task']['tags'])
+        tags.append({'key': 'aws_user', 'value': self.aws_user})
         return tags
 
     def submit_task(self) -> None:
