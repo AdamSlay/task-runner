@@ -16,11 +16,15 @@ def parse_args() -> argparse.Namespace:
         description='Run LongTermStats as an ECS task in Fargate with the provided arguments(start date, end date, warning level)')
     parser.add_argument('--sdate', type=str, default=None, help='The start date for the task in YYYY-MM-DD format')
     parser.add_argument('--edate', type=str, default=None, help='The end date for the task in YYYY-MM-DD format')
-    parser.add_argument('--warn', type=str, default='WARN',
-                        help='Default=WARN. The warning level to log (DEBUG, INFO, WARN, ERROR, CRITICAL)')
+    parser.add_argument('--warn', type=str, default='INFO',
+                        help='Default=INFO. The warning level to log (DEBUG, INFO, WARN, ERROR, CRITICAL)')
     parser.add_argument('--config', type=str, default='config.json', help='Path to the config file')
     parser.add_argument('--tags', type=str, default=None, help='Tags to apply to the task. Comma separated and no spaces "key1=value1,key2=value2"')
     args = parser.parse_args()
+    if args.warn not in ['DEBUG', 'INFO', 'WARN', 'ERROR', 'CRITICAL']:
+        raise ValueError(f'Invalid warning level: {args.warn}')
+    else:
+        logging.getLogger().setLevel(args.warn)
     return args
 
 
