@@ -2,7 +2,6 @@ import argparse
 import boto3
 import json
 import logging
-import sys
 
 
 class TaskRunner:
@@ -11,7 +10,6 @@ class TaskRunner:
     """
 
     def __init__(self, args: argparse.Namespace):
-        logging.basicConfig(level=args.warn, format='%(asctime)s - %(levelname)s - %(message)s', stream=sys.stdout)
 
         with open(args.config, 'r') as f:
             self.config = json.load(f)

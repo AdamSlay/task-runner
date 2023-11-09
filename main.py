@@ -1,7 +1,10 @@
 import argparse
 import logging
+import sys
 
 from TaskRunner import TaskRunner
+
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s', stream=sys.stdout)
 
 
 def parse_args() -> argparse.Namespace:
@@ -21,7 +24,6 @@ def parse_args() -> argparse.Namespace:
 
 
 def main():
-
     args = parse_args()
     runner = TaskRunner(args)
     runner.submit_task()
