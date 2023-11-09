@@ -1,7 +1,7 @@
 {
   "task": {
-    "cluster": "cluster-name",
-    "task_def": "task-definition-name",
+    "cluster": "example-cluster",
+    "task_def": "example-task-def",
     "launch_type": "FARGATE or EC2",
     "count": 1
   },
@@ -9,6 +9,6 @@
     "ssm_path": "/path/to/your/ssm/parameters",
   },
   "overrides": {
-    "container_name": "container-name",
+    "container_name": "example-container",
   }
 }
