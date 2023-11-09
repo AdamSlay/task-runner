@@ -1,10 +1,10 @@
 import argparse
 import boto3
+import json
 import logging
-import toml
 
-logging.basicConfig(level=logging.WARN, format='%(asctime)s - %(levelname)s - %(message)s')
-config = toml.load('config.toml')
+with open('config.json', 'r') as f:
+    config = json.load(f)
 
 
 def parse_args() -> argparse.Namespace:
@@ -131,6 +131,8 @@ def submit_task(ecs: boto3.client, network_configuration: dict, overrides: dict)
 
 
 def main():
+    logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+
     args = parse_args()
     ecs = boto3.client('ecs')
     ssm = boto3.client('ssm')
