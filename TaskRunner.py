@@ -60,7 +60,9 @@ class TaskRunner:
             }
         }
         logging.info(
-            f'Network configuration for ECS task: [subnets: {subnet_id}, security_groups: {security_group_id}, assign_public_ip: {assign_public_ip}]')
+            f'Network configuration for ECS task: [subnets: {subnet_id}, '
+            f'security_groups: {security_group_id}, '
+            f'assign_public_ip: {assign_public_ip}]')
         return network_configuration
 
     def _build_overrides(self) -> dict:
@@ -93,7 +95,7 @@ class TaskRunner:
         """
         tags = []
         if self.args.tags:
-            # convert tags string to list of dicts: [{'key': 'key1', 'value': 'value1'}, {'key': 'key2', 'value': 'value2'}]
+            # convert tags string to list of dicts: [{'key': 'key1', 'value': 'value1'}]
             tags = self.args.tags
         tags.extend(self.config['task']['tags'])
         tags.append({'key': 'AwsUser', 'value': self.aws_user})
@@ -124,7 +126,7 @@ def parse_args() -> argparse.Namespace:
     :return: argparse.Namespace object with the parsed arguments
     """
     parser = argparse.ArgumentParser(
-        description='Run LongTermStats as an ECS task in Fargate with the provided arguments(start date, end date, warning level)')
+        description='Run LTS as an ECS task in Fargate with the provided arguments(start date, end date, warning level)')
     parser.add_argument('--sdate', type=str, default=None, help='The start date for the task in YYYY-MM-DD format')
     parser.add_argument('--edate', type=str, default=None, help='The end date for the task in YYYY-MM-DD format')
     parser.add_argument('--warn', type=str, default='INFO',
@@ -154,6 +156,7 @@ def format_tags(tags: str) -> list:
     :param tags: tags argument from the command line
     :return: list of dicts with the tags formatted as required by the boto3 API
     """
+    tags = tags.replace(' ', '')  # remove white spaces
     tags = tags.split(',')  # ['key1=value1', 'key2=value2']
     tags = [tag.split('=') for tag in tags]  # [['key1', 'value1'], ['key2', 'value2']]
     tags = [{'key': tag[0], 'value': tag[1]} for tag in
