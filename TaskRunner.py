@@ -9,7 +9,7 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 
 class TaskRunner:
     """
-    Run ECS tasks from the command line with overrides from a config file
+    Run ECS tasks from the command line with overrides
     """
 
     def __init__(self, args: argparse.Namespace):
