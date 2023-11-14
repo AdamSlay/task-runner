@@ -79,7 +79,7 @@ class TaskRunner:
 
         env_vars = self.config["task"]["env_vars"]
         if env_vars:
-            environment = [{e: env_vars[e]} for e in env_vars]
+            environment = [{'name': v, 'value': env_vars[v]} for v in env_vars]
             logging.info(f'Environment variables provided for ECS task: {environment}')
             overrides['containerOverrides'][0]['environment'] = environment
 
@@ -140,7 +140,11 @@ def parse_args() -> argparse.Namespace:
         logging.getLogger().setLevel(args.warn)
 
     if args.tags is not None:
-        args.tags = format_tags(args.tags)
+        args.tags = format_tags(str(args.tags))
+
+    if args.warn is not None:
+        args.warn = args.warn.upper()
+
     return args
 
 
