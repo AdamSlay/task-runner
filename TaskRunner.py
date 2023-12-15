@@ -131,7 +131,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument('--edate', type=str, default=None, help='The end date for the task in YYYY-MM-DD format')
     parser.add_argument('--warn', type=str, default='INFO',
                         help='Default=INFO. The warning level to log (DEBUG, INFO, WARN, ERROR, CRITICAL)')
-    parser.add_argument('--config', type=str, default='config.json', help='Path to the config file')
+    parser.add_argument('--config', type=str, default='run_config.json', help='Path to the config file')
     parser.add_argument('--tags', type=str, default=None,
                         help='Tags to apply to the task. Comma separated and no spaces "key1=value1,key2=value2"')
     args = parser.parse_args()
