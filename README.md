@@ -33,13 +33,6 @@ python3 TaskRunner.py --config <path/to/config.json>
 If any parameter is not specified, the container will use its default value.
 
 ## Configuration
-The following parameters should be stored in the _***SSM Parameter Store***_ at the ```ssm_path``` location:
-- ```subnet_id```: AWS VPC Subnet ID
-- ```security_group_id```: AWS VPC Security Group ID
-- ```assign_public_ip```: "ENABLED" or "DISABLED"
-- ```DATASERVER_HOST```: Route53 DNS name
-- ```MESONET_MAILHOST```: email
-
 To alter the run configuration, edit the ```run_config.json``` file. This file is ignored by git, so you can edit the ```run_config.json.example``` file then rename it to ```run_config.json```.
 The following parameters can be configured:
 - ```cluster```: ECS Cluster
@@ -48,3 +41,10 @@ The following parameters can be configured:
 - ```count```: number of tasks to run
 - ```ssm_path```: SSM Parameter Store path
 - ```container_name```: Container Image to Run
+  
+The following parameters should be stored in the _***SSM Parameter Store***_ at the ```ssm_path``` location:
+- ```subnet_id```: AWS VPC Subnet ID
+- ```security_group_id```: AWS VPC Security Group ID
+- ```assign_public_ip```: "ENABLED" or "DISABLED"
+- ```DATASERVER_HOST```: Route53 DNS name
+- ```MESONET_MAILHOST```: email

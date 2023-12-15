@@ -3,9 +3,15 @@
     "count": 1,
     "cluster": "example-cluster",
     "task_def": "example-task-def",
-    "launch_type": "FARGATE or EC2",
-    "env_vars": {},
-    "tags": [{"key1":"value1"}, {"key2":"value2"}]
+    "launch_type": "FARGATE",
+    "env_vars": {
+      "VAR_1": "value1",
+      "VAR_2": "value2"
+    },
+    "tags": [
+    {"tag1":"value1"},
+    {"tag2":"value2"}
+    ]
   },
   "ssm": {
     "ssm_path": "/path/to/your/ssm/parameters",
