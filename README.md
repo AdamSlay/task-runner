@@ -32,17 +32,18 @@ python3 TaskRunner.py --config <path/to/config.json>
 If any parameter is not specified, the container will use its default value.
 
 ## Configuration
-The following parameters should be stored in the _***SSM Parameter Store***_:
-- ```subnet_id```: the subnet ID in which the Fargate cluster is intended to run stored as a comma separated list of Strings
-- ```security_group_id```: the security group ID in which the Fargate cluster is intended to run stored as a comma separated list of Strings
-- ```assign_public_ip```: whether to assign a public IP to the Fargate cluster, either "ENABLED" or "DISABLED"
-- ```/env```: a subdirectory containing the environment variables for the LongTermStats application. As of now, DATASERVER_HOST and MESONET_MAILHOST
+The following parameters should be stored in the _***SSM Parameter Store***_ at the ```ssm_path``` location:
+- ```subnet_id```: AWS VPC Subnet ID
+- ```security_group_id```: AWS VPC Security Group ID
+- ```assign_public_ip```: "ENABLED" or "DISABLED"
+- ```DATASERVER_HOST```: Route53 DNS name
+- ```MESONET_MAILHOST```: email
 
-The run configuration file is stored in the ```run_config.json``` file. This file is ignored by git, so you can edit the ```run_config.json.example``` file then rename it to ```run_config.json```.
+To alter the run configuration, edit the ```run_config.json``` file. This file is ignored by git, so you can edit the ```run_config.json.example``` file then rename it to ```run_config.json```.
 The following parameters can be configured:
-- ```cluster```: the name of the ECS cluster
-- ```task_def```: the name of the task definition
-- ```launch_type```: the launch type of the task, either "FARGATE" or "EC2"
-- ```count```: the number of tasks to run
-- ```ssm_path```: the path to the SSM Parameter Store
-- ```container_name```: the name of the container to run
+- ```cluster```: ECS Cluster
+- ```task_def```: Task Definition
+- ```launch_type```: "FARGATE" or "EC2"
+- ```count```: number of tasks to run
+- ```ssm_path```: SSM Parameter Store path
+- ```container_name```: Container Image to Run
