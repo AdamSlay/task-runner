@@ -11,19 +11,20 @@ pip3 install -r requirements.txt
 ```
 
 ## Usage
-You must be logged into the ```aws-cli``` with an account that has the appropriate permissions to run the script.
+You must be logged into the ```aws-cli``` with an account that has the appropriate AWS permissions to run the task in ECS.
 
 To run the script and launch a new task, run the following command:
 ```shell
-python3 lts-task-runner.py --sdate [YYYY-MM-DD] --edate [YYYY-MM-DD] --warn [DEBUG, INFO, WARNING, ERROR, CRITICAL]
+python3 TaskRunner.py --sdate [YYYY-MM-DD] --edate [YYYY-MM-DD] --warn [DEBUG, INFO, WARNING, ERROR, CRITICAL]
 ```
 Tags should be specified as a comma separated list of key-value pairs, e.g. 
 ```shell
-python3 lts-task-runner.py --sdate [YYYY-MM-DD] --edate [YYYY-MM-DD] --tags key1=value1,key2=value2
+python3 TaskRunner.py --sdate [YYYY-MM-DD] --edate [YYYY-MM-DD] --tags key1=value1,key2=value2
+python3 TaskRunner.py --sdate 2023-12-03 --edate 2023-12-07 --tags version=<image-version>,commit=<git-hash>
 ```
 Specify a config file with the ```--config``` flag:
 ```shell
-python3 lts-task-runner.py --config config.json
+python3 TaskRunner.py --config <path/to/config.json>
 ```
 
 
