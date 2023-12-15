@@ -2,7 +2,8 @@
 
 This script is intended to be used as a task runner for the LongTermStats image in AWS Fargate.
 Most environment variables and network related variables are stored in the _***SSM Parameter Store***_ and accessed via the ```ssm_path``` 
-variable in the ```config.toml``` file. Note that the ```boto3``` library from AWS will use the AWS account that is logged in on the local ```aws-cli```.
+variable in the ```run_config.json``` file. Edit the ```run_config.json``` file to change the task configuration.
+Note that the ```boto3``` library from AWS will use the AWS account that is logged in on the local ```aws-cli```.
 
 ## Installation
 To install the script, clone the repository and install the dependencies:
